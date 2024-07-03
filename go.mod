@@ -1,3 +1,3 @@
-module gihub.com/aivarsvalgers/ecommerce
+module github.com/aivarsvalgers/ecom
 
 go 1.21.0

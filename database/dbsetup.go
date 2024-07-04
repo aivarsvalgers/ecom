@@ -23,7 +23,7 @@ func DBSet() *mongo.Client {
 
 	err = client.Connect(ctx)
 
-	if err := nil {
+	if err != nil {
 		log.Fatal(err)
 	}
 
@@ -40,12 +40,12 @@ func DBSet() *mongo.Client {
 
 var Client *mongo.Client = DBSet()
 
-func UserData(client *mongo.Client, collectionName string) *mongo.collection {
+func UserData(client *mongo.Client, collectionName string) *mongo.Collection {
 	var collection *mongo.Collection = client.Database("Ecommerce").Collection(collectionName)
 	return collection
 }
 
-func ProductData(clinet *mongo.Client, collectionName string) *mongo.Collection {
+func ProductData(client *mongo.Client, collectionName string) *mongo.Collection {
 	var productCollection *mongo.Collection = client.Database("Ecommerce").Collection(collectionName)
 	return productCollection
 }

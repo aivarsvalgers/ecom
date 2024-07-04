@@ -59,10 +59,10 @@ func RemoveCartItem(ctx context.Context, prodCollection, userCollection *mongo.C
 		return ErrUserIdIsNotValid
 	}
 
-	filter := bson.D(primitive.E{Key: "_id", Value: id})
+	filter := bson.D{primitive.E{Key: "_id", Value: id}}
 	update := bson.M{"$pull": bson.M{"usercart": bson.M{"_id": productID}}}
 
-	_, err = UpdateMany(ctx, filter, update)
+	_, err = userCollection.UpdateMany(ctx, filter, update)
 	if err != nil {
 		return ErrCantRemoveItemCart
 	}
@@ -86,7 +86,7 @@ func BuyItemFromCart(ctx context.Context, userCollection *mongo.Collection, user
 
 	unwind := bson.D{{Key: "$unwind", Value: bson.D{primitive.E{Key: "path", Value: "$usercart"}}}}
 	grouping := bson.D{{Key: "$group", Value: bson.D{primitive.E{Key: "_id", Value: "$_id"}, {Key: "total", Value: bson.D{primitive.E{Key: "$sum", Value: "$usercart.price"}}}}}}
-	currentresults, err := userCollection.Aggregate(ctx, mongo.Pipeline(unwind, grouping))
+	currentresults, err := userCollection.Aggregate(ctx, mongo.Pipeline{unwind, grouping})
 	ctx.Done()
 	if err != nil {
 		panic(err)
@@ -100,7 +100,7 @@ func BuyItemFromCart(ctx context.Context, userCollection *mongo.Collection, user
 
 	for _, user_item := range getusercart {
 		price := user_item["total"]
-		total_price = price(int32)
+		total_price = price.(int32)
 	}
 
 	ordercart.Price = int(total_price)
@@ -137,7 +137,7 @@ func BuyItemFromCart(ctx context.Context, userCollection *mongo.Collection, user
 	return nil
 }
 
-func InstantBuyer(ctx context.Context, prodCollection, userCollection, *mongo.Collection, productID primitive.ObjectID, userID string) error {
+func InstantBuyer(ctx context.Context, prodCollection, userCollection *mongo.Collection, productID primitive.ObjectID, userID string) error {
 	id, err := primitive.ObjectIDFromHex(userID)
 
 	if err != nil {
@@ -170,7 +170,7 @@ func InstantBuyer(ctx context.Context, prodCollection, userCollection, *mongo.Co
 	filter2 := bson.D{primitive.E{Key: "_id", Value: id}}
 	update2 := bson.M{"$push": bson.M{"orders.$[].order_list": product_details}}
 
-	_ err = userCollection.UpdateOne(ctx, filter2, update2)
+	_, err = userCollection.UpdateOne(ctx, filter2, update2)
 	if err != nil {
 		log.Println(err)
 	}

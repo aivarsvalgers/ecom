@@ -3,6 +3,7 @@ package middleware
 import (
 	"net/http"
 
+	token "github.com/aivarsvalgers/ecom/tokens"
 	"github.com/gin-gonic/gin"
 )
 

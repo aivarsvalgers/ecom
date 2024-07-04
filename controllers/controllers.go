@@ -9,6 +9,7 @@ import (
 
 	"github.com/aivarsvalgers/ecom/database"
 	"github.com/aivarsvalgers/ecom/models"
+	generate "github.com/aivarsvalgers/ecom/tokens"
 	"github.com/go-playground/validator/v10"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
